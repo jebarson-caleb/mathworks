@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MATLABProject xmlns="http://www.mathworks.com/MATLABProjectFile" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.mathworks.com/MATLABProjectFile">
+   <configuration>
+      <projectRoot>/home/jebarson/Documents/mathworks/mini_drone_project</projectRoot>
+      <projectName>Mini Drone Simulink Project</projectName>
+      <description>Comprehensive Simulink project for mini drone modeling, control, and simulation</description>
+      <version>1.0</version>
+      <requiredProducts>
+         <product>MATLAB</product>
+         <product>Simulink</product>
+         <product>Aerospace Blockset</product>
+         <product>Control System Toolbox</product>
+         <product>DSP System Toolbox</product>
+         <product>Simulink Control Design</product>
+         <product>Computer Vision Toolbox</product>
+      </requiredProducts>
+   </configuration>
+   <folders>
+      <folder>models</folder>
+      <folder>scripts</folder>
+      <folder>data</folder>
+      <folder>controllers</folder>
+      <folder>subsystems</folder>
+      <folder>test_scenarios</folder>
+   </folders>
+   <files>
+      <file>README.md</file>
+      <file>startup.m</file>
+      <file>models/main_drone_model.slx</file>
+      <file>models/drone_dynamics.slx</file>
+      <file>controllers/pid_controller.slx</file>
+      <file>controllers/lqr_controller.slx</file>
+   </files>
+</MATLABProject>
