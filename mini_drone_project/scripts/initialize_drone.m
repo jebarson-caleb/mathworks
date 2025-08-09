@@ -153,8 +153,21 @@ init.angular_velocity = [0; 0; 0]; % Initial angular velocity [p, q, r] (rad/s)
 %% Save all parameters
 fprintf('Saving parameters to workspace and file...\n');
 
-% Save to .mat file for easy loading
-parameter_file = fullfile('data', 'drone_parameters.mat');
+% Get the project root directory (go up one level from scripts)
+script_dir = fileparts(mfilename('fullpath'));
+project_root = fileparts(script_dir);
+data_dir = fullfile(project_root, 'data');
+
+% Ensure data directory exists
+if ~exist(data_dir, 'dir')
+    mkdir(data_dir);
+    fprintf('Created data directory: %s\n', data_dir);
+end
+
+% Save to .mat file using absolute path
+parameter_file = fullfile(data_dir, 'drone_parameters.mat');
+fprintf('Saving parameters to: %s\n', parameter_file);
+
 save(parameter_file, 'drone', 'motor', 'prop', 'env', 'sensors', ...
      'battery', 'flight_modes', 'control', 'pid', 'lqr', 'mpc', 'sim', 'init');
 

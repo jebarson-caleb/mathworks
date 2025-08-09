@@ -344,8 +344,20 @@ end
 
 %% Save all simulation configurations
 fprintf('Saving simulation configurations...\n');
-save('data/simulation_config.mat', 'sim_config', 'logging_config', ...
-     'visualization', 'metrics');
+
+% Get the project root directory (go up one level from scripts)
+script_dir = fileparts(mfilename('fullpath'));
+project_root = fileparts(script_dir);
+data_dir = fullfile(project_root, 'data');
+
+% Ensure data directory exists
+if ~exist(data_dir, 'dir')
+    mkdir(data_dir);
+end
+
+config_file = fullfile(data_dir, 'simulation_config.mat');
+save(config_file, 'sim_config', 'logging_config', 'visualization', 'metrics');
+fprintf('Simulation config saved to: %s\n', config_file);
 
 fprintf('Simulation setup completed successfully!\n');
 fprintf('Available scenarios:\n');

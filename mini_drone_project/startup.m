@@ -163,11 +163,15 @@ solverPref.RelTol = '1e-6';
 % Save preferences
 try
     % Ensure data directory exists before saving
-    if ~exist('data', 'dir')
-        mkdir('data');
+    project_root = pwd;
+    data_dir = fullfile(project_root, 'data');
+    if ~exist(data_dir, 'dir')
+        mkdir(data_dir);
     end
-    save('data/simulation_preferences.mat', 'solverPref');
-    fprintf('✓ Simulation preferences saved\n');
+    
+    pref_file = fullfile(data_dir, 'simulation_preferences.mat');
+    save(pref_file, 'solverPref');
+    fprintf('✓ Simulation preferences saved to: %s\n', pref_file);
 catch ME
     fprintf('✗ Failed to save simulation preferences: %s\n', ME.message);
 end

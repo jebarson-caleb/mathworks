@@ -7,11 +7,17 @@ fprintf('======================================\n');
 
 %% Load required data if not available
 if ~exist('sim_config', 'var')
-    if exist('data/simulation_config.mat', 'file')
-        load('data/simulation_config.mat');
-        fprintf('Simulation configuration loaded.\n');
+    % Get the project root directory (go up one level from scripts)
+    script_dir = fileparts(mfilename('fullpath'));
+    project_root = fileparts(script_dir);
+    config_file = fullfile(project_root, 'data', 'simulation_config.mat');
+    
+    if exist(config_file, 'file')
+        load(config_file);
+        fprintf('Simulation configuration loaded from: %s\n', config_file);
     else
-        fprintf('Warning: Simulation configuration not found. Run simulation_setup.m first.\n');
+        fprintf('Warning: Simulation configuration not found at: %s\n', config_file);
+        fprintf('Run simulation_setup.m first.\n');
     end
 end
 
