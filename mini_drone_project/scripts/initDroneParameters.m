@@ -5,10 +5,21 @@ function initDroneParameters()
 
 fprintf('Initializing drone parameters...\n');
 
+% Get current directory (should be project root)
+project_root = pwd;
+data_dir = fullfile(project_root, 'data');
+
 % Ensure data directory exists
-if ~exist('data', 'dir')
-    mkdir('data');
-    fprintf('Created data directory.\n');
+if ~exist(data_dir, 'dir')
+    try
+        mkdir(data_dir);
+        fprintf('✓ Created data directory: %s\n', data_dir);
+    catch ME
+        fprintf('✗ Failed to create data directory: %s\n', ME.message);
+        error('Cannot create data directory. Check permissions.');
+    end
+else
+    fprintf('✓ Data directory exists: %s\n', data_dir);
 end
 
 %% Physical Properties
@@ -139,8 +150,19 @@ init.angular_velocity = [0; 0; 0];   % Initial angular velocity [p, q, r] (rad/s
 fprintf('Saving parameters to workspace and file...\n');
 
 try
+    % Ensure we're in the right directory and data folder exists
+    project_root = pwd;
+    data_dir = fullfile(project_root, 'data');
+    
+    % Create data directory if it doesn't exist
+    if ~exist(data_dir, 'dir')
+        mkdir(data_dir);
+        fprintf('Created data directory: %s\n', data_dir);
+    end
+    
     % Create full file path
-    parameter_file = fullfile(pwd, 'data', 'drone_parameters.mat');
+    parameter_file = fullfile(data_dir, 'drone_parameters.mat');
+    fprintf('Saving to: %s\n', parameter_file);
     
     % Save all parameters
     save(parameter_file, 'drone', 'motor', 'prop', 'env', 'sensors', ...

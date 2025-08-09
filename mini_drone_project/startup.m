@@ -18,9 +18,16 @@ project_root = pwd;
 required_dirs = {'data', 'models', 'scripts', 'controllers', 'subsystems', 'test_scenarios'};
 fprintf('Checking and creating required directories...\n');
 for i = 1:length(required_dirs)
-    if ~exist(required_dirs{i}, 'dir')
-        mkdir(required_dirs{i});
-        fprintf('Created directory: %s\n', required_dirs{i});
+    dir_path = fullfile(project_root, required_dirs{i});
+    if ~exist(dir_path, 'dir')
+        try
+            mkdir(dir_path);
+            fprintf('✓ Created directory: %s\n', required_dirs{i});
+        catch ME
+            fprintf('✗ Failed to create directory %s: %s\n', required_dirs{i}, ME.message);
+        end
+    else
+        fprintf('✓ Directory exists: %s\n', required_dirs{i});
     end
 end
 
@@ -154,7 +161,16 @@ solverPref.MaxStep = '0.01';
 solverPref.RelTol = '1e-6';
 
 % Save preferences
-save('data/simulation_preferences.mat', 'solverPref');
+try
+    % Ensure data directory exists before saving
+    if ~exist('data', 'dir')
+        mkdir('data');
+    end
+    save('data/simulation_preferences.mat', 'solverPref');
+    fprintf('✓ Simulation preferences saved\n');
+catch ME
+    fprintf('✗ Failed to save simulation preferences: %s\n', ME.message);
+end
 
 %% Create data logging setup
 fprintf('Setting up data logging configuration...\n');
