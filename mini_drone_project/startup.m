@@ -15,13 +15,16 @@ fprintf('Project Version: 1.0\n\n');
 project_root = pwd;
 addpath(genpath(project_root));
 
-% Add specific folders to path
-addpath(fullfile(project_root, 'models'));
-addpath(fullfile(project_root, 'scripts'));
-addpath(fullfile(project_root, 'data'));
-addpath(fullfile(project_root, 'controllers'));
-addpath(fullfile(project_root, 'subsystems'));
-addpath(fullfile(project_root, 'test_scenarios'));
+% Add specific folders to path (only if they exist)
+folders_to_add = {'models', 'scripts', 'data', 'controllers', 'subsystems', 'test_scenarios'};
+for i = 1:length(folders_to_add)
+    folder_path = fullfile(project_root, folders_to_add{i});
+    if exist(folder_path, 'dir')
+        addpath(folder_path);
+    else
+        fprintf('Note: Directory %s does not exist, skipping.\n', folders_to_add{i});
+    end
+end
 
 fprintf('Project paths added successfully.\n');
 

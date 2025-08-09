@@ -154,7 +154,8 @@ init.angular_velocity = [0; 0; 0]; % Initial angular velocity [p, q, r] (rad/s)
 fprintf('Saving parameters to workspace and file...\n');
 
 % Save to .mat file for easy loading
-save('data/drone_parameters.mat', 'drone', 'motor', 'prop', 'env', 'sensors', ...
+parameter_file = fullfile('data', 'drone_parameters.mat');
+save(parameter_file, 'drone', 'motor', 'prop', 'env', 'sensors', ...
      'battery', 'flight_modes', 'control', 'pid', 'lqr', 'mpc', 'sim', 'init');
 
 % Display summary
