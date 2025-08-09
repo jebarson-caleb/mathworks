@@ -30,15 +30,36 @@ fprintf('============================\n');
 try
     % Generate complete parameter database
     fprintf('Generating drone parameters...\n');
-    cd('data');
-    run('generate_parameters.m');
-    cd('..');
-    fprintf('✓ Parameter database created\n');
     
-    % Load drone parameters
+    % Use the robust initialization function instead
+    try
+        initDroneParameters();
+        fprintf('✓ Parameter database created using initDroneParameters\n');
+    catch
+        % Fallback to original method
+        fprintf('Trying fallback parameter generation...\n');
+        cd('data');
+        run('generate_parameters.m');
+        cd('..');
+        fprintf('✓ Parameter database created using generate_parameters\n');
+    end
+    
+    % Load drone parameters (they should already be in workspace)
     fprintf('Loading drone parameters...\n');
-    run('scripts/initialize_drone.m');
-    fprintf('✓ Drone parameters loaded\n');
+    if exist('drone', 'var') && exist('motor', 'var') && exist('battery', 'var')
+        fprintf('✓ Drone parameters already loaded in workspace\n');
+    else
+        % Try to load from file
+        param_file = fullfile('data', 'drone_parameters.mat');
+        if exist(param_file, 'file')
+            load(param_file);
+            fprintf('✓ Drone parameters loaded from file\n');
+        else
+            % Last resort - run initialize script
+            run('scripts/initialize_drone.m');
+            fprintf('✓ Drone parameters loaded using initialize_drone\n');
+        end
+    end
     
     % Display key parameters
     fprintf('Key Parameters:\n');

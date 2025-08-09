@@ -13,6 +13,17 @@ fprintf('Project Version: 1.0\n\n');
 
 %% Set Project Paths
 project_root = pwd;
+
+% Create required directories if they don't exist
+required_dirs = {'data', 'models', 'scripts', 'controllers', 'subsystems', 'test_scenarios'};
+fprintf('Checking and creating required directories...\n');
+for i = 1:length(required_dirs)
+    if ~exist(required_dirs{i}, 'dir')
+        mkdir(required_dirs{i});
+        fprintf('Created directory: %s\n', required_dirs{i});
+    end
+end
+
 addpath(genpath(project_root));
 
 % Add specific folders to path (only if they exist)
@@ -49,7 +60,28 @@ end
 
 %% Initialize Drone Parameters
 fprintf('Initializing drone parameters...\n');
-run('initialize_drone.m');
+try
+    % Use the robust initialization function
+    initDroneParameters();
+    fprintf('✓ Drone parameters initialized successfully!\n');
+catch ME
+    fprintf('✗ Parameter initialization failed: %s\n', ME.message);
+    % Try fallback initialization
+    fprintf('Attempting fallback initialization...\n');
+    try
+        % Ensure data directory exists
+        if ~exist('data', 'dir')
+            mkdir('data');
+        end
+        
+        % Run the original initialization script
+        run('initialize_drone.m');
+        fprintf('✓ Fallback initialization successful!\n');
+    catch ME2
+        fprintf('✗ Fallback initialization also failed: %s\n', ME2.message);
+        fprintf('You may need to manually create the data directory and check file permissions.\n');
+    end
+end
 
 %% Set Simulink Preferences (with error handling)
 try
