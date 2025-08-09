@@ -268,8 +268,12 @@ fprintf('   • Total files created: %d\n', total_files);
 fprintf('   • Simulink models: 5\n');
 fprintf('   • MATLAB scripts: %d\n', length(dir('**/*.m')));
 fprintf('   • Documentation files: %d\n', length(dir('**/*.md')));
-fprintf('   • Project ready for MathWorks Competition: %s\n', ...
-    char("YES ✅" * all_files_exist * all_vars_exist + "PARTIAL ⚠️" * ~(all_files_exist * all_vars_exist)));
+if all_files_exist && all_vars_exist
+    project_status = 'YES ✅';
+else
+    project_status = 'PARTIAL ⚠️';
+end
+fprintf('   • Project ready for MathWorks Competition: %s\n', project_status);
 
 fprintf('\n=========================================================\n');
 fprintf('🎉 Welcome to the MathWorks Mini Drone Competition! 🎉\n');

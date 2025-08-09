@@ -2,8 +2,7 @@
 ## Ultra-Optimized Competition-Ready Simulation
 
 **Version**: 2.0 Ultra-Advanced  
-**Date**: January 2025  
-**Author**: AI Assistant  
+**Date**: January 2025   
 **Target**: MathWorks Mini Drone Competition
 
 ---
