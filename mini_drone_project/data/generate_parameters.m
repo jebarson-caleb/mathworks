@@ -310,12 +310,12 @@ comm.packet_loss_rate = 0.01;                    % Packet loss rate [%]
 timestamp = datestr(now, 'yyyy-mm-dd_HH-MM-SS');
 
 % Save all parameters
-parameter_file = fullfile('data', 'drone_parameters_complete.mat');
+parameter_file = 'drone_parameters_complete.mat';  % Save in current directory (data/)
 save(parameter_file, 'drone', 'motor', 'prop', 'battery', 'sensors', 'env', ...
      'flight_modes', 'control', 'pid', 'sim', 'init', 'safety', 'comm', 'timestamp');
 
 % Also save a backup with timestamp
-backup_file = fullfile('data', sprintf('drone_parameters_%s.mat', timestamp));
+backup_file = sprintf('drone_parameters_%s.mat', timestamp);
 save(backup_file, 'drone', 'motor', 'prop', 'battery', 'sensors', 'env', ...
      'flight_modes', 'control', 'pid', 'sim', 'init', 'safety', 'comm', 'timestamp');
 
