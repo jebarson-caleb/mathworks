@@ -27,19 +27,51 @@ fprintf('Project paths added successfully.\n');
 
 %% Load Simulink Project (if available)
 try
-    simulinkproject(project_root);
-    fprintf('Simulink project loaded successfully.\n');
-catch
-    fprintf('Simulink project file not found. Running in standalone mode.\n');
+    % Check if we're in a directory with a .prj file
+    prj_files = dir('*.prj');
+    if ~isempty(prj_files)
+        project_obj = simulinkproject(pwd);
+        fprintf('Simulink project loaded successfully.\n');
+    else
+        fprintf('No Simulink project file found. Running in standalone mode.\n');
+    end
+catch ME
+    if contains(ME.message, 'simulinkproject')
+        fprintf('Simulink project functionality not available. Running in standalone mode.\n');
+    else
+        fprintf('Project loading failed: %s\n', ME.message);
+    end
+    fprintf('This won''t affect the core functionality.\n');
 end
 
 %% Initialize Drone Parameters
 fprintf('Initializing drone parameters...\n');
 run('initialize_drone.m');
 
-%% Set Simulink Preferences
-set_param(0, 'CharacterEncoding', 'UTF-8');
-set_param(0, 'LineBranchDataTip', 'on');
+%% Set Simulink Preferences (with error handling)
+try
+    % Set character encoding if parameter exists
+    if isprop(get_param(0, 'ObjectParameters'), 'CharacterEncoding')
+        set_param(0, 'CharacterEncoding', 'UTF-8');
+    end
+    
+    % Set data tips if parameter exists (newer MATLAB versions)
+    if isprop(get_param(0, 'ObjectParameters'), 'LineBranchDataTip')
+        set_param(0, 'LineBranchDataTip', 'on');
+    end
+    
+    % Alternative for older versions
+    try
+        set_param(0, 'DataTipDisplay', 'on');
+    catch
+        % Parameter doesn't exist in this version, continue
+    end
+    
+    fprintf('Simulink preferences configured successfully.\n');
+catch ME
+    fprintf('Warning: Some Simulink preferences could not be set: %s\n', ME.message);
+    fprintf('This is normal for some MATLAB versions and won''t affect functionality.\n');
+end
 
 %% Load Required Toolboxes Check
 fprintf('Checking required toolboxes...\n');
