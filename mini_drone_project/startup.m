@@ -83,12 +83,30 @@ required_toolboxes = {
     'Simulink Control Design'
 };
 
+missing_toolboxes = {};
 for i = 1:length(required_toolboxes)
     if license('test', strrep(required_toolboxes{i}, ' ', '_'))
         fprintf('✓ %s - Available\n', required_toolboxes{i});
     else
         fprintf('✗ %s - Not Available\n', required_toolboxes{i});
+        missing_toolboxes{end+1} = required_toolboxes{i};
     end
+end
+
+% Provide guidance for missing toolboxes
+if ~isempty(missing_toolboxes)
+    fprintf('\nNote: Some advanced features may not be available without:\n');
+    for i = 1:length(missing_toolboxes)
+        switch missing_toolboxes{i}
+            case 'Control System Toolbox'
+                fprintf('  - %s: LQR controller will use basic implementation\n', missing_toolboxes{i});
+            case 'DSP System Toolbox'
+                fprintf('  - %s: Using basic filter implementations\n', missing_toolboxes{i});
+            otherwise
+                fprintf('  - %s\n', missing_toolboxes{i});
+        end
+    end
+    fprintf('Basic drone simulation will still work with available toolboxes.\n');
 end
 
 %% Set up model callbacks and preferences
@@ -107,8 +125,27 @@ save('data/simulation_preferences.mat', 'solverPref');
 fprintf('Setting up data logging configuration...\n');
 
 % Signal logging configuration
-Simulink.sdi.setSubPlotLayout(2,2);
-Simulink.sdi.setAutoArrangeSubPlots(true);
+try
+    % Check if Simulation Data Inspector is available
+    if exist('Simulink.sdi.setSubPlotLayout', 'file')
+        Simulink.sdi.setSubPlotLayout(2,2);
+        Simulink.sdi.setAutoArrangeSubPlots(true);
+        fprintf('Data logging configured successfully.\n');
+    else
+        fprintf('Simulation Data Inspector not available. Using basic logging.\n');
+        % Use basic Simulink logging instead
+        try
+            set_param(0, 'DataLogging', 'on');
+            set_param(0, 'DataLoggingToFile', 'on');
+            fprintf('Basic data logging configured.\n');
+        catch
+            fprintf('Using default logging settings.\n');
+        end
+    end
+catch ME
+    fprintf('Data logging setup failed: %s\n', ME.message);
+    fprintf('Continuing with default logging settings.\n');
+end
 
 %% Display completion message
 fprintf('\n==========================================\n');
